@@ -1,0 +1,32 @@
+name:                ascworld
+version:             0.1.0.0
+# synopsis:
+# description:
+homepage:            "https://github.com/javyre/ascworld#readme"
+license:             BSD3
+license-file:        LICENSE
+author:              Javier A. Pollak
+maintainer:          javi.po.123@gmail.com
+copyright:           2018 Javier A. Pollak
+category:            Game
+extra-source-files:  README.md
+
+dependencies:
+    - base >= 4.6 && < 5
+    - ansi-terminal >= 0.8
+    - colour >= 2.3
+
+executables:
+    ascworld:
+        source-dirs:      src
+        main:             Main.hs
+
+tests:
+    spec:
+        main: Spec.hs
+        source-dirs:
+            - test
+            - src
+        dependencies:
+            - hspec
+            - QuickCheck
