@@ -52,7 +52,7 @@ testRay ray objs
 
     where
         getCol :: (Object a, Point3 a, a) -> Colour Float
-        getCol ((Object clr _), _, d) = RS.darken (realToFrac $ (100-d)/100.0 :: Float) clr
+        getCol ((Object clr _), _, d) = RS.darken (realToFrac $ 1-(d*0.9/30.0) :: Float) clr
         -- getCol :: Maybe (Object, Point3 a) -> Maybe (Colour Float)
         -- getCol (Nothing)     = Nothing
         -- getCol (Just ((Object clr _), p)) = Just clr
