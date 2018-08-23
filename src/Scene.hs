@@ -83,8 +83,8 @@ testRay ray objs
                 -- reduce :: Maybe Point3 -> Point3 -> Maybe Point3
                 reduce' (Nothing) b@(_, _) = Just b
                 reduce' (Just a@(_, ad))  b@(_, bd)
-                    | ad > bd         = Just a
-                    | otherwise       = Just b
+                    | ad > bd         = Just b
+                    | otherwise       = Just a
             in
                 -- find closest intersection for object (if any)
                 (\(p, d) -> (obj, p, d)) <$> foldl (reduce') Nothing inters
