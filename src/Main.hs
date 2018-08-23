@@ -1,7 +1,6 @@
 module Main where
 
 import System.Console.ANSI
-import qualified System.Console.ANSI.Codes as ANSI
 import Camera
 
 import Vec
@@ -9,50 +8,48 @@ import Scene
 import Data.Colour.SRGB.Linear
 import Control.Concurrent
 
-testCam = cam
-    -- `apply` translate (Vec3 1.0 1.0 0)
-    -- `apply` rotate (Vec3 0 0 1.0) (-pi*2.0 / 4.0)
-    -- `apply` translate (Vec3 (-1.0) (-1.0) 0)
-
-    -- `apply` translate (Vec3 (-1.0) (-1.0) 0)
-    `apply` pivot (Point3 1.0 1.0 0) (Vec3 0 0 1.0) (-pi*2.0 / 4.0)
-    -- `apply` translate (Vec3 0 0 $ -1.0)
-    where cam = createCamera (2, 2) (1.0, 1.0)
-
 scene = Scene { camera=cam, objects=objs }
-    where cam = createCamera (120, 35) (0.5, 1.0)
-              `apply` translate (Vec3 0 0 9.0)
+    where cam = createCamera (sw, sh) (0.25, 0.5)
+              `setEyePos` (Point3 ex ey 45.0)
+              -- `apply` translate (Vec3 0 0 45.0)
+
+          sw = 130
+          sh = 40
+          ex = (fromIntegral sw) * 0.25 / 2.0
+          ey = (fromIntegral sh) * 0.5 / 2.0
 
           objs =
-              [ Object (rgb 1.0 0.0 0) [ Triangle (Point3 0.0 0.0   (-3.0))
-                                                (Point3 20.0 0.0  (-3.0))
-                                                (Point3 20.0 20.0 (-3.0))
-                                                ]
+              [ Object (rgb 1.0 0.0 1.0) [ Triangle (Point3 10.0 10.0 (-20.0))
+                                                    (Point3 20.0 10.0 (-20.0))
+                                                    (Point3 20.0 20.0 (-20.0))
+                                         , Triangle (Point3 10.0 10.0 (-20.0))
+                                                    (Point3 10.0 20.0 (-20.0))
+                                                    (Point3 20.0 20.0 (-20.0))
+                                         , Triangle (Point3 10.0 10.0 (-20.0))
+                                                    (Point3 10.0 20.0 (-40.0))
+                                                    (Point3 20.0 20.0 (-40.0))
+                                         , Triangle (Point3 10.0 10.0 (-40.0))
+                                                    (Point3 10.0 20.0 (-40.0))
+                                                    (Point3 20.0 20.0 (-20.0))
+                                         ]
+              -- , Object (rgb 1.0 1.0 0) [ Triangle (Point3 00.0 10.0 (-20.0))
+              --                                     (Point3 20.0 00.0 (-20.0))
+              --                                     (Point3 20.0 10.0 (-20.0))
+              --                                     ]
               ]
 
-rotationT = pivot (Point3 10.0 10.0 0) (Vec3 0 0 1.0) (-pi*2.0 / 64.0)
-    `apply` pivot (Point3 10.0 10.0 0) (Vec3 0 1.0 0) (-pi*2.0 / (64.0 * 2.0))
+rotationT = pivot (Point3 20.0 20.0 (-20.0)) (Vec3 0.0 1.0 0.0) (-pi*2.0 / (360.0 / 2))
+    -- `apply` pivot (Point3 15.0 15.0 (-10.0)) (Vec3 0.0 0.0 1.0) (-pi*2.0 / (360.0 / 2))
 
 main :: IO ()
 main = do
-    let rs = render scene
-        in display rs
-
     putStrLn "hello world"
-    putStrLn $ "screen corners = " ++ (show $ corners s)
-    putStrLn $ "screen (1,1) = " ++ (show $ centers s !! 1 !! 1)
-    putStrLn $ "abs eye pos  = " ++ (show $ getEyePos testCam)
-
-    putStrLn $ "ray (1,1)    = " ++ (show $ (getRay testCam (1, 1)) `point` 1.0)
-
     let loop scene = do {
         let nscene = scene { objects=(map (\o -> o `apply` rotationT) (objects scene)) }
             in do
                 display (render nscene)
-                threadDelay (truncate $ 1000000.0/60.0)
+                threadDelay (truncate $ 1000000.0/100.0)
                 loop nscene
     }
         in loop scene
 
-    where
-        Camera e s = testCam

@@ -9,6 +9,7 @@ module Camera
     , createCamera
     , getCorner
     , getEyePos
+    , setEyePos
     , getRay
     ) where
 
@@ -43,7 +44,7 @@ data Screen = Screen
 
 instance Transformable Camera Double where
     apply (Camera e s) t = Camera ne ns
-        where ne = e { relativePos = relativePos e `apply` t }
+        where ne = e
               ns = s
                   { corners =
                       ( getCorner s 0 `apply` t
@@ -93,6 +94,9 @@ getCorner Screen { corners = (_, _, _, c) } 3 = c
 
 getEyePos :: Camera -> Point3
 getEyePos (Camera e s) = relativePos e `apply` currentTransform s
+
+setEyePos :: Camera -> Point3 -> Camera
+setEyePos (Camera e s) pos = Camera (e { relativePos = pos }) s
 
 
 getRay :: Camera -> (Int, Int) -> (Ray3)
